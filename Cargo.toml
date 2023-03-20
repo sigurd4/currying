@@ -1,0 +1,13 @@
+[package]
+name = "currying"
+version = "0.1.0"
+edition = "2021"
+keywords = ["function", "fp", "curry", "currying", "haskell"]
+categories = ["rust-patterns", "algorithms", "mathematics"]
+description = "A crate for currying anything implementing FnOnce. Arguments can be passed one at a time, yielding a new something implementing FnOnce (and possibly FnMut and Fn) which can be called with one less argument."
+repository = "https://github.com/sigurd4/currying"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tupleops = {version = "0.1.1", features = ["concat"]}
