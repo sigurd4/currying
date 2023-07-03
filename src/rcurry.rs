@@ -1,6 +1,6 @@
 use std::marker::{Tuple, PhantomData};
 
-use tupleops::{TuplePrepend, Prepend, TupleConcat, ConcatTuples};
+use tupleops::{ConcatMany, TupleConcatMany};
 
 use crate::Curried;
 
@@ -11,6 +11,8 @@ use crate::Curried;
 /// X is the rest of the arguments left over after currying.
 /// 
 /// This trait is automatically implemented for anything implementing [FnOnce](FnOnce) which takes one or more argument.
+/// 
+/// # Examples
 /// 
 /// ```rust
 /// use currying::*;
@@ -40,13 +42,10 @@ pub trait RCurry<C, X>
 
 impl<C, X, F> const RCurry<C, X> for F
 where
-    (C,): Tuple,
     X: Tuple,
-    ((), X): TupleConcat<(), X>,
-    ConcatTuples<(), X>: Tuple,
-    (ConcatTuples<(), X>, (C,)): TupleConcat<ConcatTuples<(), X>, (C,)>,
-    ConcatTuples<ConcatTuples<(), X>, (C,)>: Tuple,
-    F: FnOnce<ConcatTuples<ConcatTuples<(), X>, (C,)>>
+    ((), X, (C,)): TupleConcatMany<((), X, (C,))>,
+    ConcatMany<((), X, (C,))>: Tuple,
+    F: FnOnce<ConcatMany<((), X, (C,))>>
 {
     type Output = Curried<(), X, (C,), F>;
 
