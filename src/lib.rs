@@ -59,8 +59,10 @@
 //! assert_eq!(ASSERTIONS, [true; 3]);
 //! ```
 
-moddef::pub_flat_mods!(
-    curried
-    curry
-    rcurry
+moddef::moddef!(
+    flat(pub) mod {
+        curried,
+        curry,
+        rcurry
+    }
 );
