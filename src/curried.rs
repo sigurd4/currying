@@ -45,15 +45,15 @@ where
     pub(crate) phantom: PhantomData<X>
 }
 
-impl<LX, X, RX, F> const FnOnce<X> for Curried<LX, X, RX, F>
+impl<LX, X, RX, F> /*const*/ FnOnce<X> for Curried<LX, X, RX, F>
 where
     LX: Tuple,
     X: Tuple,
     RX: Tuple,
     (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
     ConcatMany<(LX, X, RX)>: Tuple,
-    F: ~const FnOnce<ConcatMany<(LX, X, RX)>>,
-    Self: ~const Destruct
+    F: /*~const*/ FnOnce<ConcatMany<(LX, X, RX)>>,
+    Self: /*~const*/ Destruct
 {
     type Output = F::Output;
 
@@ -63,14 +63,14 @@ where
     }
 }
 
-impl<LX, X, RX, F> const FnMut<X> for Curried<LX, X, RX, F>
+impl<LX, X, RX, F> /*const*/ FnMut<X> for Curried<LX, X, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
     RX: Tuple + Copy,
     (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
     ConcatMany<(LX, X, RX)>: Tuple,
-    F: ~const FnMut<ConcatMany<(LX, X, RX)>>
+    F: /*~const*/ FnMut<ConcatMany<(LX, X, RX)>>
 {
     extern "rust-call" fn call_mut(&mut self, args: X) -> Self::Output
     {
@@ -78,14 +78,14 @@ where
     }
 }
 
-impl<LX, X, RX, F> const Fn<X> for Curried<LX, X, RX, F>
+impl<LX, X, RX, F> /*const*/ Fn<X> for Curried<LX, X, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
     RX: Tuple + Copy,
     (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
     ConcatMany<(LX, X, RX)>: Tuple,
-    F: ~const Fn<ConcatMany<(LX, X, RX)>>
+    F: /*~const*/ Fn<ConcatMany<(LX, X, RX)>>
 {
     extern "rust-call" fn call(&self, args: X) -> Self::Output
     {
