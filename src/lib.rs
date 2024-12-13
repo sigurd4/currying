@@ -14,7 +14,13 @@
 
 //! A crate for currying functions in rust
 //! 
-//! Currying is a functional programming term which essentially means to pass the first argument to a function, yielding a new function needing only the next following arguments.
+//! Arguments can be passed one at a time, yielding a new something implementing `FnOnce`
+//! (and possibly `FnMut` and `Fn`) which can be called with one less argument.
+//! 
+//! It also implements [AsyncFnOnce](AsyncFnOnce), [AsyncFnMut](AsyncFnMut) and [AsyncFn](AsyncFn) if the feature `async` is enabled,
+//! since this is an experimental feature.
+//! 
+//! Curried arguments are then omitted when calling the curried function, as they have already been passed.
 //! 
 //! # Examples
 //! 
@@ -28,11 +34,11 @@
 //! 
 //! assert_eq!(fx(y, z), f(x, y, z));
 //! 
-//! let fxy = fx.curry(y);
+//! let fxz = fx.rcurry(z);
 //! 
-//! assert_eq!(fxy(z), f(x, y, z));
+//! assert_eq!(fxz(y), f(x, y, z));
 //! 
-//! let fxyz = fxy.curry(z);
+//! let fxyz = fxz.curry(y);
 //! 
 //! assert_eq!(fxyz(), f(x, y, z));
 //! ```
@@ -53,25 +59,21 @@
 //! const Y: u8 = 2;
 //! const Z: u8 = 3;
 //! 
-//! const ASSERTIONS: [bool; 3] = {
-//!     let fx = f.curry(X);
-//!     let fxy = fx.curry(Y);
-//!     let fxyz = fxy.curry(Z);
-//!     [
-//!         fx(Y, Z) == f(X, Y, Z),
-//!         fxy(Z) == f(X, Y, Z),
-//!         fxyz() == f(X, Y, Z)
-//!     ]
-//! };
+//! const F: fn(u8, u8, u8) -> u8 = f;
+//! const FX: Curried<(u8,), (), fn(u8, u8, u8) -> u8> = F.curry(X);
+//! const FXZ: Curried<(), (u8,), Curried<(u8,), (), fn(u8, u8, u8) -> u8>> = FX.rcurry(Z);
+//! const FXYZ: Curried<(u8,), (), Curried<(), (u8,), Curried<(u8,), (), fn(u8, u8, u8) -> u8>>> = FXZ.curry(Y);
 //! 
-//! assert_eq!(ASSERTIONS, [true; 3]);
+//! assert_eq!(FX(Y, Z), f(X, Y, Z));
+//! assert_eq!(FXZ(Y), f(X, Y, Z));
+//! assert_eq!(FXYZ(), f(X, Y, Z));
 //! ```
 
 moddef::moddef!(
     flat(pub) mod {
         curried,
         curry,
-        rcurry
+        rcurry for cfg(feature = "rcurry")
     }
 );
 
@@ -81,6 +83,7 @@ mod test
 {
     use crate::*;
 
+    #[cfg(feature = "rcurry")]
     #[test]
     fn test()
     {
@@ -98,5 +101,28 @@ mod test
         let fxyz = fxz.curry(y);
         
         assert_eq!(fxyz(), f(x, y, z));
+    }
+
+    #[cfg(feature = "const")]
+    #[test]
+    fn test_const()
+    {
+        const fn f(x: u8, y: u8, z: u8) -> u8
+        {
+            x + y + z
+        }
+        
+        const X: u8 = 1;
+        const Y: u8 = 2;
+        const Z: u8 = 3;
+
+        const F: fn(u8, u8, u8) -> u8 = f;
+        const FX: Curried<(u8,), (), fn(u8, u8, u8) -> u8> = F.curry(X);
+        const FXZ: Curried<(), (u8,), Curried<(u8,), (), fn(u8, u8, u8) -> u8>> = FX.rcurry(Z);
+        const FXYZ: Curried<(u8,), (), Curried<(), (u8,), Curried<(u8,), (), fn(u8, u8, u8) -> u8>>> = FXZ.curry(Y);
+        
+        assert_eq!(FX(Y, Z), f(X, Y, Z));
+        assert_eq!(FXZ(Y), f(X, Y, Z));
+        assert_eq!(FXYZ(), f(X, Y, Z));
     }
 }

@@ -4,18 +4,25 @@ version = "0.3.0"
 edition = "2021"
 license = "MIT"
 keywords = ["function", "fp", "curry", "currying", "haskell"]
-categories = ["rust-patterns", "algorithms", "mathematics"]
+categories = ["rust-patterns", "algorithms", "mathematics", "no-std::no-alloc"]
 description = "A crate for currying anything implementing FnOnce. Arguments can be passed one at a time, yielding a new something implementing FnOnce (and possibly FnMut and Fn) which can be called with one less argument."
 repository = "https://github.com/sigurd4/currying"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lints.rust]
+unsafe_code = "forbid"
+
+[badges]
+maintainence = {status = "as-is"}
+
 [features]
-default = []
+default = ["rcurry", "const"]
 experimental = ["async", "const"]
 async = []
 const = []
 pedantic = []
+rcurry = []
 
 [dependencies]
 moddef = "0.2.6"

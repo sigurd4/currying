@@ -9,7 +9,7 @@ use tupleops::{TupleConcatMany, ConcatMany};
 /// 
 /// This struct implements [FnOnce](FnOnce), [FnMut](FnMut) and [Fn](Fn) if the curried function also implements these traits.
 /// 
-/// It also implements [AsyncFnOnce](AsyncFnOnce), [AsyncFnMut](AsyncFnMut) and [AsyncFn](AsyncFn) if the feature "async" is enabled,
+/// It also implements [AsyncFnOnce](AsyncFnOnce), [AsyncFnMut](AsyncFnMut) and [AsyncFn](AsyncFn) if the feature `async` is enabled,
 /// since this is an experimental feature.
 /// 
 /// Curried arguments are then omitted when calling the curried function, as they have already been passed.
@@ -26,11 +26,11 @@ use tupleops::{TupleConcatMany, ConcatMany};
 /// 
 /// assert_eq!(fx(y, z), f(x, y, z));
 /// 
-/// let fxy = fx.curry(y);
+/// let fxz = fx.rcurry(z);
 /// 
-/// assert_eq!(fxy(z), f(x, y, z));
+/// assert_eq!(fxz(y), f(x, y, z));
 /// 
-/// let fxyz = fxy.curry(z);
+/// let fxyz = fxz.curry(y);
 /// 
 /// assert_eq!(fxyz(), f(x, y, z));
 /// ```
@@ -59,7 +59,8 @@ where
 
     extern "rust-call" fn call_once(self, args: X) -> Self::Output
     {
-        self.func.call_once(private::tuples_concat_const(self.args_left, args, self.args_right))
+        //self.func.call_once(private::tuples_concat_const(self.args_left, args, self.args_right))
+        self.func.call_once(tupleops::concat_many((self.args_left, args, self.args_right)))
     }
 }
 
@@ -74,7 +75,8 @@ where
 {
     extern "rust-call" fn call_mut(&mut self, args: X) -> Self::Output
     {
-        self.func.call_mut(private::tuples_concat_const(self.args_left, args, self.args_right))
+        //self.func.call_mut(private::tuples_concat_const(self.args_left, args, self.args_right))
+        self.func.call_mut(tupleops::concat_many((self.args_left, args, self.args_right)))
     }
 }
 
@@ -89,7 +91,8 @@ where
 {
     extern "rust-call" fn call(&self, args: X) -> Self::Output
     {
-        self.func.call(private::tuples_concat_const(self.args_left, args, self.args_right))
+        //self.func.call(private::tuples_concat_const(self.args_left, args, self.args_right))
+        self.func.call(tupleops::concat_many((self.args_left, args, self.args_right)))
     }
 }
 
@@ -110,7 +113,8 @@ where
 
     extern "rust-call" fn async_call_once(self, args: X) -> Self::CallOnceFuture
     {
-        self.func.async_call_once(private::tuples_concat_const(self.args_left, args, self.args_right))
+        //self.func.async_call_once(private::tuples_concat_const(self.args_left, args, self.args_right))
+        self.func.async_call_once(tupleops::concat_many((self.args_left, args, self.args_right)))
     }
 }
 
@@ -130,7 +134,8 @@ where
 
     extern "rust-call" fn async_call_mut(&mut self, args: X) -> Self::CallRefFuture<'_>
     {
-        self.func.async_call_mut(private::tuples_concat_const(self.args_left, args, self.args_right))
+        //self.func.async_call_mut(private::tuples_concat_const(self.args_left, args, self.args_right))
+        self.func.async_call_mut(tupleops::concat_many((self.args_left, args, self.args_right)))
     }
 }
 
@@ -146,11 +151,12 @@ where
 {
     extern "rust-call" fn async_call(&self, args: X) -> Self::CallRefFuture<'_>
     {
-        self.func.async_call(private::tuples_concat_const(self.args_left, args, self.args_right))
+        //self.func.async_call(private::tuples_concat_const(self.args_left, args, self.args_right))
+        self.func.async_call(tupleops::concat_many((self.args_left, args, self.args_right)))
     }
 }
 
-mod private
+/*mod private
 {
     use core::{marker::Tuple, mem::ManuallyDrop};
 
@@ -164,6 +170,7 @@ mod private
         concat: ManuallyDrop<ConcatMany<Tpls>>
     }
 
+    #[deprecated]
     pub const fn tuples_concat_const<LX, X, RX>(left: LX, mid: X, right: RX) -> ConcatMany<(LX, X, RX)>
     where
         LX: Tuple,
@@ -179,4 +186,4 @@ mod private
             }.concat)
         }
     }
-}
+}*/
