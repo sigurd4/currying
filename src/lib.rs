@@ -2,6 +2,7 @@
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
 #![feature(const_trait_impl)]
+#![feature(const_destruct)]
 
 //! A crate for currying functions in rust
 //! 
