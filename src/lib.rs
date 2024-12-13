@@ -134,3 +134,61 @@ mod test
         assert_eq!(FXYZ(), f(X, Y, Z));
     }
 }
+
+#[cfg(feature = "pedantic")]
+#[cfg(test)]
+mod test
+{
+    #[cfg(feature = "rcurry")]
+    #[test]
+    fn test()
+    {
+        use crate::*;
+
+        let f = |x, y, z| x + y + z;
+        let (x, y, z) = (1, 2, 3);
+
+        let fx = f.curry::<(i32, i32)>(x);
+
+        assert_eq!(fx(y, z), f(x, y, z));
+
+        let fxz = fx.rcurry::<(i32,)>(z);
+
+        assert_eq!(fxz(y), f(x, y, z));
+
+        let fxyz = fxz.curry::<()>(y);
+
+        assert_eq!(fxyz(), f(x, y, z));
+    }
+
+    #[cfg(feature = "const")]
+    #[cfg(feature = "rcurry")]
+    #[test]
+    fn test_const()
+    {
+        use crate::*;
+
+        const fn f(x: u8, y: u8, z: u8) -> u8
+        {
+            x + y + z
+        }
+
+        const X: u8 = 1;
+        const Y: u8 = 2;
+        const Z: u8 = 3;
+
+        type FType = fn(u8, u8, u8) -> u8;
+        type FXType = Curried<(u8,), (), FType>;
+        type FXZType = Curried<(), (u8,), FXType>;
+        type FXYZType = Curried<(u8,), (), FXZType>;
+
+        const F: FType = f;
+        const FX: FXType = F.curry::<(u8, u8)>(X);
+        const FXZ: FXZType = FX.rcurry::<(u8,)>(Z);
+        const FXYZ: FXYZType = FXZ.curry::<()>(Y);
+
+        assert_eq!(FX(Y, Z), f(X, Y, Z));
+        assert_eq!(FXZ(Y), f(X, Y, Z));
+        assert_eq!(FXYZ(), f(X, Y, Z));
+    }
+}
