@@ -2,10 +2,11 @@
 [![Build Status](https://github.com/sigurd4/currying/workflows/Build-stable/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-stable.yml)
 [![Test Status](https://github.com/sigurd4/currying/workflows/Test/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/test.yml)
 [![Lint Status](https://github.com/sigurd4/currying/workflows/Lint/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/lint.yml)
+
 [![Latest Version](https://img.shields.io/crates/v/currying.svg)](https://crates.io/crates/currying)
 [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Developers Wiki](https://img.shields.io/badge/development-wiki-yellowgreen.svg)](https://github.com/xd009642/tarpaulin/wiki/Developers)
-[![Coverage Status](https://coveralls.io/repos/github/sigurd4/currying/badge.svg?branch=main)](https://coveralls.io/github/sigurd4/currying?branch=main)
+[![Documentation](https://img.shields.io/docsrs/currying)](https://docs.rs/currying)
+[![Coverage Status](https://coveralls.io/repos/github/sigurd4/currying/badge.svg?branch=master)](https://coveralls.io/github/sigurd4/currying?branch=master)
 
 # Currying
 
