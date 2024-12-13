@@ -1,4 +1,4 @@
-name: Build-nightly (all features enabled)
+name: Build-nightly-all-features
 on:
   schedule:
     - cron: '29 15 * * *'
