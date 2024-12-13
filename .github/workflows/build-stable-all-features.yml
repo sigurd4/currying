@@ -33,5 +33,9 @@ jobs:
       uses: "Swatinem/rust-cache@v2"
     - uses: "actions-rs/cargo@v1"
       with:
-        command: "check --all-features"
+        command: "check"
       name: "Run `cargo check`"
+    - uses: "taiki-e/install-action@cargo-hack"
+      with:
+        command: "cargo hack check --each-feature --no-dev-deps"
+      name: "Check all features with 'cargo-hack'"
