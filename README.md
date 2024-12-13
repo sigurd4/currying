@@ -2,7 +2,7 @@
 
 A crate for currying anything implementing `FnOnce`.
 
-Arguments can be passed one at a time, yielding a new something implementing `FnOnce` (and possibly `FnMut` and `Fn`) which can be called with one less argument. It also implements `AsyncFnOnce`, `AsyncFnMut` and `AsyncFn` if the feature "async" is enabled, since this is an experimental feature. Curried arguments are then omitted when calling the curried function, as they have already been passed.
+Arguments can be passed one at a time, yielding a new something implementing `FnOnce` (and possibly `FnMut` and `Fn`) which can be called with one less argument. It also implements `AsyncFnOnce`, `AsyncFnMut` and `AsyncFn` if the feature `async` is enabled, since this is an experimental feature. Curried arguments are then omitted when calling the curried function, as they have already been passed.
 
 ## Example
 
