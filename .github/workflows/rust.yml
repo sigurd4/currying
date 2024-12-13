@@ -84,6 +84,9 @@ jobs:
   coverage:
     name: "Code Coverage"
     runs-on: "ubuntu-latest"
+    container:
+      image: xd009642/tarpaulin:develop-nightly
+      options: --security-opt seccomp=unconfined
     steps:
     - uses: "actions/checkout@v2"
       name: "Checkout"
@@ -94,10 +97,8 @@ jobs:
         override: true
       name: "Install Rust nightly"
     - name: "Run cargo-tarpaulin"
-      uses: "actions-rs/tarpaulin@v0.1"
-      with:
-        version: "0.31.0"
-        args: "--ignore-tests -- --test-threads 1"
+      run: |
+          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --out xml
     - name: "Upload to codecov.io"
       uses: "codecov/codecov-action@v1"
     - name: "Archive code coverage results"
