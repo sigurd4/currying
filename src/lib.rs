@@ -50,21 +50,21 @@
 //! const fn f(x: u8, y: u8, z: u8) -> u8 {
 //!     x + y + z
 //! }
-//! 
+//!
 //! const X: u8 = 1;
 //! const Y: u8 = 2;
 //! const Z: u8 = 3;
-//! 
+//!
 //! type FType = fn(u8, u8, u8) -> u8;
 //! type FXType = Curried<(u8,), (), FType>;
 //! type FXZType = Curried<(), (u8,), FXType>;
 //! type FXYZType = Curried<(u8,), (), FXZType>;
-//! 
+//!
 //! const F: FType = f;
 //! const FX: FXType = F.curry(X);
 //! const FXZ: FXZType = FX.rcurry(Z);
 //! const FXYZ: FXYZType = FXZ.curry(Y);
-//! 
+//!
 //! assert_eq!(FX(Y, Z), f(X, Y, Z));
 //! assert_eq!(FXZ(Y), f(X, Y, Z));
 //! assert_eq!(FXYZ(), f(X, Y, Z));
@@ -80,12 +80,14 @@ moddef::moddef!(
 
 #[cfg(not(feature = "pedantic"))]
 #[cfg(test)]
-mod test {
-    use crate::*;
-
+mod test
+{
     #[cfg(feature = "rcurry")]
     #[test]
-    fn test() {
+    fn test()
+    {
+        use crate::*;
+
         let f = |x, y, z| x + y + z;
         let (x, y, z) = (1, 2, 3);
 
@@ -103,9 +105,14 @@ mod test {
     }
 
     #[cfg(feature = "const")]
+    #[cfg(feature = "rcurry")]
     #[test]
-    fn test_const() {
-        const fn f(x: u8, y: u8, z: u8) -> u8 {
+    fn test_const()
+    {
+        use crate::*;
+
+        const fn f(x: u8, y: u8, z: u8) -> u8
+        {
             x + y + z
         }
 
