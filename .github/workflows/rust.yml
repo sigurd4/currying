@@ -15,7 +15,7 @@ jobs:
         #- stable
         #- beta
         - nightly
-        - nightly-2024-12-11
+        - nightly-2024-12-12
     steps:
     - uses: "actions/checkout@v2"
       name: "Checkout"
@@ -34,7 +34,7 @@ jobs:
         command: "check"
         args: "--examples"
         name: "Check examples"
-        if: "matrix.rust != 'nightly-2024-12-11'"
+        if: "matrix.rust != 'nightly-2024-12-12'"
   test:
     name: "Test"
     runs-on: "ubuntu-latest"
