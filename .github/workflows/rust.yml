@@ -1,9 +1,12 @@
-name: Rust
+name: Build
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+env:
+  RUST_BACKTRACE: 1
+  RUST_LOG: "cargo_tarpaulin=trace,llvm_profparser=trace"
 jobs:
   check:
     name: "Check"
