@@ -3,9 +3,11 @@
 #![feature(tuple_trait)]
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
-#![feature(const_trait_impl)]
-#![feature(const_destruct)]
 #![feature(trait_alias)]
+
+#![feature(const_trait_impl)]
+//#![cfg_attr(feature = "const", feature(const_trait_impl))]
+//#![cfg_attr(feature = "const", feature(const_destruct))]
 
 #![cfg_attr(feature = "async", feature(async_closure))]
 #![cfg_attr(feature = "async", feature(async_fn_traits))]

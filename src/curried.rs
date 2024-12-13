@@ -1,4 +1,4 @@
-use core::marker::{Destruct, Tuple};
+use core::marker::Tuple;
 
 #[cfg(feature = "async")]
 use core::ops::{AsyncFn, AsyncFnMut, AsyncFnOnce};
@@ -53,7 +53,7 @@ where
     (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
     ConcatMany<(LX, X, RX)>: Tuple,
     F: /*~const*/ FnOnce<ConcatMany<(LX, X, RX)>>,
-    Self: /*~const*/ Destruct
+    //Self: /*~const*/ Destruct
 {
     type Output = F::Output;
 
@@ -102,7 +102,7 @@ where
     (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
     ConcatMany<(LX, X, RX)>: Tuple,
     F: /*~const*/ AsyncFnOnce<ConcatMany<(LX, X, RX)>>,
-    Self: /*~const*/ Destruct
+    //Self: /*~const*/ Destruct
 {
     type Output = F::Output;
 
