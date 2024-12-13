@@ -1,4 +1,4 @@
-name: Build
+name: rust
 on:
   push:
     branches: [ "master" ]
