@@ -1,5 +1,9 @@
-[![Build Status](https://github.com/sigurd4/currying/workflows/Build-nightly/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-nightly.yml)
-[![Build Status](https://github.com/sigurd4/currying/workflows/Build-stable/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-stable.yml)
+[![Build Status (nightly)](https://github.com/sigurd4/currying/workflows/Build-nightly/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-nightly.yml)
+[![Build Status (nightly, all features)](https://github.com/sigurd4/currying/workflows/Build-nightly-all-features/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-nightly-all-features.yml)
+
+[![Build Status (stable)](https://github.com/sigurd4/currying/workflows/Build-stable/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-stable.yml)
+[![Build Status (stable, all features)](https://github.com/sigurd4/currying/workflows/Build-stable-all-features/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/build-stable-all-features.yml)
+
 [![Test Status](https://github.com/sigurd4/currying/workflows/Test/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/test.yml)
 [![Lint Status](https://github.com/sigurd4/currying/workflows/Lint/badge.svg)](https://github.com/sigurd4/currying/actions/workflows/lint.yml)
 
