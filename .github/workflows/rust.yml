@@ -83,7 +83,7 @@ jobs:
       name: "Run `cargo clippy`"
   coverage:
     name: "Code Coverage"
-    runs-on: "ubuntu-lts-latest"
+    runs-on: "ubuntu-lts"
     steps:
     - uses: "actions/checkout@v2"
       name: "Checkout"
