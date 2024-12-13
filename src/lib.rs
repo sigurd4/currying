@@ -47,20 +47,24 @@
 //!
 //! use currying::*;
 //!
-//! const fn f(x: u8, y: u8, z: u8) -> u8
-//! {
+//! const fn f(x: u8, y: u8, z: u8) -> u8 {
 //!     x + y + z
 //! }
-//!
+//! 
 //! const X: u8 = 1;
 //! const Y: u8 = 2;
 //! const Z: u8 = 3;
-//!
-//! const F: fn(u8, u8, u8) -> u8 = f;
-//! const FX: Curried<(u8,), (), fn(u8, u8, u8) -> u8> = F.curry(X);
-//! const FXZ: Curried<(), (u8,), Curried<(u8,), (), fn(u8, u8, u8) -> u8>> = FX.rcurry(Z);
-//! const FXYZ: Curried<(u8,), (), Curried<(), (u8,), Curried<(u8,), (), fn(u8, u8, u8) -> u8>>> = FXZ.curry(Y);
-//!
+//! 
+//! type FType = fn(u8, u8, u8) -> u8;
+//! type FXType = Curried<(u8,), (), FType>;
+//! type FXZType = Curried<(), (u8,), FXType>;
+//! type FXYZType = Curried<(u8,), (), FXZType>;
+//! 
+//! const F: FType = f;
+//! const FX: FXType = F.curry(X);
+//! const FXZ: FXZType = FX.rcurry(Z);
+//! const FXYZ: FXYZType = FXZ.curry(Y);
+//! 
 //! assert_eq!(FX(Y, Z), f(X, Y, Z));
 //! assert_eq!(FXZ(Y), f(X, Y, Z));
 //! assert_eq!(FXYZ(), f(X, Y, Z));
