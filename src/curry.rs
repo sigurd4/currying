@@ -62,13 +62,39 @@ pub trait Curry<C>: Sized
     type Output;
 
     #[cfg(not(feature = "pedantic"))]
-    fn curry(self, arg: C) -> Self::Output;
+    fn curry_once(self, arg: C) -> Self::Output;
+    #[cfg(not(feature = "pedantic"))]
+    fn curry_mut(&mut self, arg: C) -> <&mut Self as Curry<C>>::Output
+    {
+        self.curry_once(arg)
+    }
+    #[cfg(not(feature = "pedantic"))]
+    fn curry(&self, arg: C) -> <&Self as Curry<C>>::Output
+    {
+        self.curry_once(arg)
+    }
 
     #[cfg(feature = "pedantic")]
-    fn curry<X>(self, arg: C) -> Self::Output
+    fn curry_once<X>(self, arg: C) -> Self::Output
     where
         X: Tuple,
         Self::Output: FnOnce<X>;
+    #[cfg(feature = "pedantic")]
+    fn curry_mut<'a, X>(&'a mut self, arg: C) -> <&'a mut Self as Curry<C>>::Output
+    where
+        X: Tuple,
+        <&'a mut Self as Curry<C>>::Output: FnOnce<X>
+    {
+        self.curry_once(arg)
+    }
+    #[cfg(feature = "pedantic")]
+    fn curry<'a, X>(&'a self, arg: C) -> <&'a Self as Curry<C>>::Output
+    where
+        X: Tuple,
+        <&'a Self as Curry<C>>::Output: FnOnce<X>
+    {
+        self.curry_once(arg)
+    }
 }
 
 #[cfg(feature = "const")]
@@ -77,26 +103,18 @@ impl<C, F> const Curry<C> for F
     type Output = Curried<(C,), (), F>;
 
     #[cfg(not(feature = "pedantic"))]
-    fn curry(self, arg: C) -> Self::Output
+    fn curry_once(self, arg: C) -> Self::Output
     {
-        Curried {
-            args_left: (arg,),
-            args_right: (),
-            func: self
-        }
+        Curried::curry(self, arg)
     }
 
     #[cfg(feature = "pedantic")]
-    fn curry<X>(self, arg: C) -> Self::Output
+    fn curry_once<X>(self, arg: C) -> Self::Output
     where
         X: Tuple,
         Self::Output: FnOnce<X>
     {
-        Curried {
-            args_left: (arg,),
-            args_right: (),
-            func: self
-        }
+        Curried::curry(self, arg)
     }
 }
 
@@ -106,25 +124,17 @@ impl<C, F> Curry<C> for F
     type Output = Curried<(C,), (), F>;
 
     #[cfg(not(feature = "pedantic"))]
-    fn curry(self, arg: C) -> Self::Output
+    fn curry_once(self, arg: C) -> Self::Output
     {
-        Curried {
-            args_left: (arg,),
-            args_right: (),
-            func: self
-        }
+        Curried::curry(self, arg)
     }
 
     #[cfg(feature = "pedantic")]
-    fn curry<X>(self, arg: C) -> Self::Output
+    fn curry_once<X>(self, arg: C) -> Self::Output
     where
         X: Tuple,
         Self::Output: FnOnce<X>
     {
-        Curried {
-            args_left: (arg,),
-            args_right: (),
-            func: self
-        }
+        Curried::curry(self, arg)
     }
 }

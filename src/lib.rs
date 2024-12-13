@@ -56,9 +56,9 @@
 //! const Z: u8 = 3;
 //!
 //! type FType = fn(u8, u8, u8) -> u8;
-//! type FXType = Curried<(u8,), (), FType>;
-//! type FXZType = Curried<(), (u8,), FXType>;
-//! type FXYZType = Curried<(u8,), (), FXZType>;
+//! type FXType = Curried<(u8,), (), &'static FType>;
+//! type FXZType = Curried<(), (u8,), &'static FXType>;
+//! type FXYZType = Curried<(u8,), (), &'static FXZType>;
 //!
 //! const F: FType = f;
 //! const FX: FXType = F.curry(X);
@@ -103,6 +103,44 @@ mod test
         assert_eq!(fxyz(), f(x, y, z));
     }
 
+    #[test]
+    fn test_mut()
+    {
+        use crate::Curry;
+
+        let i0 = 0;
+        let mut i = i0;
+        let n = 1;
+
+        let mut f = |j| {
+            i += j;
+            i
+        };
+
+        let mut fj = f.curry_mut(n);
+
+        for k in 1..10
+        {
+            assert_eq!(fj(), i0 + k * n)
+        }
+    }
+
+    #[test]
+    fn test_once()
+    {
+        use crate::Curry;
+
+        let i0 = 0;
+        let i = i0;
+        let n = 1;
+
+        let f = |j| i + j;
+
+        let i = f.curry_once(n)();
+
+        assert_eq!(i, i0 + n)
+    }
+
     #[cfg(feature = "const")]
     #[cfg(feature = "rcurry")]
     #[test]
@@ -120,9 +158,9 @@ mod test
         const Z: u8 = 3;
 
         type FType = fn(u8, u8, u8) -> u8;
-        type FXType = Curried<(u8,), (), FType>;
-        type FXZType = Curried<(), (u8,), FXType>;
-        type FXYZType = Curried<(u8,), (), FXZType>;
+        type FXType = Curried<(u8,), (), &'static FType>;
+        type FXZType = Curried<(), (u8,), &'static FXType>;
+        type FXYZType = Curried<(u8,), (), &'static FXZType>;
 
         const F: FType = f;
         const FX: FXType = F.curry(X);
@@ -178,9 +216,9 @@ mod test
         const Z: u8 = 3;
 
         type FType = fn(u8, u8, u8) -> u8;
-        type FXType = Curried<(u8,), (), FType>;
-        type FXZType = Curried<(), (u8,), FXType>;
-        type FXYZType = Curried<(u8,), (), FXZType>;
+        type FXType = Curried<(u8,), (), &'static FType>;
+        type FXZType = Curried<(), (u8,), &'static FXType>;
+        type FXYZType = Curried<(u8,), (), &'static FXZType>;
 
         const F: FType = f;
         const FX: FXType = F.curry::<(u8, u8)>(X);

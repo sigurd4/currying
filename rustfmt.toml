@@ -1,1 +1,13 @@
 brace_style = "AlwaysNextLine"
+control_brace_style = "AlwaysNextLine"
+remove_nested_parens = true
+reorder_impl_items = true
+reorder_modules = true
+reorder_imports = true
+space_after_colon = true
+spaces_around_ranges = false
+tab_spaces = 4
+unstable_features = true
+wrap_comments = true
+comment_width = 170
+max_width = 170

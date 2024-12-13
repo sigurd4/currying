@@ -40,9 +40,41 @@ where
     LX: Tuple,
     RX: Tuple
 {
-    pub(crate) args_left: LX,
-    pub(crate) args_right: RX,
-    pub(crate) func: F
+    args_left: LX,
+    args_right: RX,
+    func: F
+}
+
+impl<LX, RX, F> Curried<LX, RX, F>
+where
+    LX: Tuple,
+    RX: Tuple
+{
+    pub(crate) const fn new(args_left: LX, args_right: RX, func: F) -> Self
+    {
+        Self {
+            args_left,
+            args_right,
+            func
+        }
+    }
+}
+
+impl<C, F> Curried<(C,), (), F>
+{
+    pub(crate) const fn curry(func: F, arg: C) -> Self
+    {
+        Self::new((arg,), (), func)
+    }
+}
+
+#[cfg(feature = "rcurry")]
+impl<C, F> Curried<(), (C,), F>
+{
+    pub(crate) const fn rcurry(func: F, arg: C) -> Self
+    {
+        Self::new((), (arg,), func)
+    }
 }
 
 impl<LX, X, RX, F> /*const*/ FnOnce<X> for Curried<LX, RX, F>
