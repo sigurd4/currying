@@ -41,23 +41,23 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-      rust:
-      - stable
-      - beta
-      - nightly
-      steps:
-      - uses: "actions/checkout@v2"
-        name: "Checkout"
-      - uses: "actions-rs/toolchain@v1"
-        with:
-          profile: "minimal"
-          toolchain: "${{ matrix.rust }}"
-          override: true
-        name: "Install Rust ${{ matrix.rust }}"
-      - uses: "actions-rs/cargo@v1"
-        with:
-          command: "test"
-          name: "Run `cargo test`"
+        rust:
+        - stable
+        - beta
+        - nightly
+    steps:
+    - uses: "actions/checkout@v2"
+      name: "Checkout"
+    - uses: "actions-rs/toolchain@v1"
+      with:
+        profile: "minimal"
+        toolchain: "${{ matrix.rust }}"
+        override: true
+      name: "Install Rust ${{ matrix.rust }}"
+    - uses: "actions-rs/cargo@v1"
+      with:
+        command: "test"
+        name: "Run `cargo test`"
   lints:
     name: "Lints"
     runs-on: "ubuntu-latest"
