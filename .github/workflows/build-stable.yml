@@ -1,5 +1,7 @@
 name: Build-stable
 on:
+  schedule:
+    - cron: '29 15 * * *'
   push:
     branches: [ "master" ]
   pull_request:
