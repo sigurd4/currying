@@ -69,7 +69,6 @@
 //! assert_eq!(FXZ(Y), f(X, Y, Z));
 //! assert_eq!(FXYZ(), f(X, Y, Z));
 //! ```
-
 moddef::moddef!(
     flat(pub) mod {
         curried,
