@@ -35,7 +35,7 @@ jobs:
       with:
         command: "check"
       name: "Run `cargo check`"
-    - uses: taiki-e/install-action@v2
+    - uses: "taiki-e/install-action@v2"
       with:
         tool: "cargo-hack"
         command: "cargo hack check --each-feature --no-dev-deps"
