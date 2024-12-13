@@ -1,4 +1,4 @@
-name: rust
+name: Coverage
 on:
   push:
     branches: [ "master" ]
