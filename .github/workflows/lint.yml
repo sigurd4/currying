@@ -1,0 +1,34 @@
+name: Lint
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+env:
+  RUST_BACKTRACE: 1
+  RUST_LOG: "cargo_tarpaulin=trace,llvm_profparser=trace"
+jobs:
+  lints:
+    name: "Lints"
+    runs-on: "ubuntu-latest"
+    steps:
+    - uses: "actions/checkout@v3"
+      name: "Checkout"
+    - uses: "actions-rs/toolchain@v1"
+      with:
+        profile: "minimal"
+        #toolchain: "stable"
+        toolchain: "nightly"
+        override: true
+        components: "rustfmt, clippy"
+      name: "Install Rust stable"
+    - uses: "actions-rs/cargo@v1"
+      with:
+        command: "fmt"
+        args: "--all -- --check"
+      name: "Run `cargo fmt`"
+    - uses: "actions-rs/cargo@v1"
+      with:
+        command: "clippy"
+        args: "-- -D warnings"
+      name: "Run `cargo clippy`"
