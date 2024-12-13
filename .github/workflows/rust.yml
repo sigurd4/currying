@@ -7,7 +7,7 @@ on:
 jobs:
   check:
     name: "Check"
-    runs-on: "archlinux-latest"
+    runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
@@ -37,7 +37,7 @@ jobs:
         if: "matrix.rust != 'nightly-2024-12-12'"
   test:
     name: "Test"
-    runs-on: "archlinux-latest"
+    runs-on: "ubuntu-latest"
     strategy:
       matrix:
         rust:
@@ -59,7 +59,7 @@ jobs:
         name: "Run `cargo test`"
   lints:
     name: "Lints"
-    runs-on: "archlinux-latest"
+    runs-on: "ubuntu-latest"
     steps:
     - uses: "actions/checkout@v2"
       name: "Checkout"
@@ -83,7 +83,7 @@ jobs:
       name: "Run `cargo clippy`"
   coverage:
     name: "Code Coverage"
-    runs-on: "archlinux-latest"
+    runs-on: "ubuntu-lts-latest"
     steps:
     - uses: "actions/checkout@v2"
       name: "Checkout"
