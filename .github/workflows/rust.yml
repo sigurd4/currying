@@ -15,7 +15,7 @@ jobs:
         #- stable
         #- beta
         - nightly
-        - nightly-1.85.0
+        - 1.85.0-nightly
     steps:
     - uses: "actions/checkout@v2"
       name: "Checkout"
@@ -34,7 +34,7 @@ jobs:
         command: "check"
         args: "--examples"
         name: "Check examples"
-        if: "matrix.rust != 'nightly-1.85.0'"
+        if: "matrix.rust != '1.85.0-nightly'"
   test:
     name: "Test"
     runs-on: "ubuntu-latest"
