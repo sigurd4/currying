@@ -1,4 +1,4 @@
-name: Build-stable
+name: Build-stable (all features enabled)
 on:
   schedule:
     - cron: '29 15 * * *'
