@@ -1,8 +1,14 @@
+#![no_std]
+
 #![feature(tuple_trait)]
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
 #![feature(const_trait_impl)]
 #![feature(const_destruct)]
+#![feature(trait_alias)]
+
+#![cfg_attr(feature = "async", feature(async_closure))]
+#![cfg_attr(feature = "async", feature(async_fn_traits))]
 
 //! A crate for currying functions in rust
 //! 
@@ -66,3 +72,29 @@ moddef::moddef!(
         rcurry
     }
 );
+
+#[cfg(not(feature = "pedantic"))]
+#[cfg(test)]
+mod test
+{
+    use crate::*;
+
+    #[test]
+    fn test()
+    {
+        let f = |x, y, z| x + y + z;
+        let (x, y, z) = (1, 2, 3);
+        
+        let fx = f.curry(x);
+        
+        assert_eq!(fx(y, z), f(x, y, z));
+        
+        let fxz = fx.rcurry(z);
+        
+        assert_eq!(fxz(y), f(x, y, z));
+        
+        let fxyz = fxz.curry(y);
+        
+        assert_eq!(fxyz(), f(x, y, z));
+    }
+}

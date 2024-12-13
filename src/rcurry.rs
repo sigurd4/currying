@@ -1,6 +1,4 @@
-use std::marker::{Tuple, PhantomData};
-
-use tupleops::{ConcatMany, TupleConcatMany};
+use core::marker::Tuple;
 
 use crate::Curried;
 
@@ -32,30 +30,101 @@ use crate::Curried;
 /// 
 /// assert_eq!(fxyz(), f(x, y, z));
 /// ```
-#[const_trait]
-pub trait RCurry<C, X>
+pub trait RCurriable<C, X: Tuple> = RCurry<C, Output: FnOnce<X>>;
+
+/// A trait providing the method for currying from the right.
+/// 
+/// Only types that implement [FnOnce](FnOnce) and can take a rightmost argument of type `C` can be called once curried.
+/// 
+/// # Examples
+/// 
+/// ```rust
+/// use currying::*;
+/// 
+/// let f = |x, y, z| x + y + z;
+/// let (x, y, z) = (1, 2, 3);
+/// 
+/// let fx = f.curry(x);
+/// 
+/// assert_eq!(fx(y, z), f(x, y, z));
+/// 
+/// let fxy = fx.curry(y);
+/// 
+/// assert_eq!(fxy(z), f(x, y, z));
+/// 
+/// let fxyz = fxy.curry(z);
+/// 
+/// assert_eq!(fxyz(), f(x, y, z));
+/// ```
+#[cfg_attr(feature = "const", const_trait)]
+pub trait RCurry<C>: Sized
 {
     type Output;
 
+    #[cfg(not(feature = "pedantic"))]
     fn rcurry(self, arg: C) -> Self::Output;
+
+    #[cfg(feature = "pedantic")]
+    fn rcurry<X>(self, arg: C) -> Self::Output
+    where
+        X: Tuple,
+        Self::Output: FnOnce<X>;
 }
 
-impl<C, X, F> const RCurry<C, X> for F
-where
-    X: Tuple,
-    ((), X, (C,)): TupleConcatMany<((), X, (C,))>,
-    ConcatMany<((), X, (C,))>: Tuple,
-    F: FnOnce<ConcatMany<((), X, (C,))>>
+#[cfg(feature = "const")]
+impl<C, F> const RCurry<C> for F
 {
-    type Output = Curried<(), X, (C,), F>;
+    type Output = Curried<(), (C,), F>;
 
+    #[cfg(not(feature = "pedantic"))]
     fn rcurry(self, arg: C) -> Self::Output
     {
-        Curried {
+        Curried::<(), (C,), F> {
             args_left: (),
             args_right: (arg,),
-            func: self,
-            phantom: PhantomData
+            func: self
+        }
+    }
+
+    #[cfg(feature = "pedantic")]
+    fn rcurry<X>(self, arg: C) -> Self::Output
+    where
+        X: Tuple,
+        Self::Output: FnOnce<X>
+    {
+        Curried::<(), (C,), F> {
+            args_left: (),
+            args_right: (arg,),
+            func: self
+        }
+    }
+}
+
+#[cfg(not(feature = "const"))]
+impl<C, F> RCurry<C> for F
+{
+    type Output = Curried<(), (C,), F>;
+
+    #[cfg(not(feature = "pedantic"))]
+    fn rcurry(self, arg: C) -> Self::Output
+    {
+        Curried::<(), (C,), F> {
+            args_left: (),
+            args_right: (arg,),
+            func: self
+        }
+    }
+
+    #[cfg(feature = "pedantic")]
+    fn rcurry<X>(self, arg: C) -> Self::Output
+    where
+        X: Tuple,
+        Self::Output: FnOnce<X>
+    {
+        Curried::<(), (C,), F> {
+            args_left: (),
+            args_right: (arg,),
+            func: self
         }
     }
 }
