@@ -34,5 +34,7 @@ jobs:
     - uses: "taiki-e/install-action@v2"
       with:
         tool: "cargo-hack"
+      name: "Install cargo-hack"
+    - with:
         command: "cargo hack check --each-feature --no-dev-deps"
       name: "Check all features with 'cargo-hack'"
