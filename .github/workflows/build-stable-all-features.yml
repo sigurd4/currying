@@ -37,5 +37,5 @@ jobs:
       name: "Install cargo-hack"
     - uses: "actions-rs/cargo@v1"
       with:
-        command: "cargo hack check --each-feature --no-dev-deps"
+        command: "cargo-hack check --each-feature --no-dev-deps"
       name: "Check all features with 'cargo-hack'"
