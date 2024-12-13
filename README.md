@@ -10,7 +10,7 @@
 [![Latest Version](https://img.shields.io/crates/v/currying.svg)](https://crates.io/crates/currying)
 [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/docsrs/currying)](https://docs.rs/currying)
-[![Coverage Status](https://coveralls.io/repos/github/sigurd4/currying/badge.svg?branch=master)](https://coveralls.io/github/sigurd4/currying?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/sigurd4/currying)](https://app.codecov.io/github/sigurd4/currying)
 
 # Currying
 
