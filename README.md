@@ -1,3 +1,9 @@
+[![Build Status](https://github.com/sigurd4/currying/workflows/Build/badge.svg)](https://github.com/sigurd4/currying/actions)
+[![Latest Version](https://img.shields.io/crates/v/currying.svg)](https://crates.io/crates/currying)
+[![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Developers Wiki](https://img.shields.io/badge/development-wiki-yellowgreen.svg)](https://github.com/xd009642/tarpaulin/wiki/Developers)
+[![Coverage Status](https://coveralls.io/repos/github/sigurd4/currying/badge.svg?branch=main)](https://coveralls.io/github/sigurd4/currying?branch=main)
+
 # Currying
 
 A crate for currying anything implementing `FnOnce`.
