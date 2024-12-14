@@ -8,7 +8,7 @@ use crate::Curried;
 /// 
 /// X is the rest of the arguments left over after currying.
 /// 
-/// This trait is automatically implemented for anything implementing [FnOnce](FnOnce) which takes one or more argument.
+/// This trait is automatically implemented for anything implementing [FnOnce](core::ops::FnOnce) which takes one or more argument.
 /// 
 /// # Examples
 /// 
@@ -34,7 +34,7 @@ pub trait RCurriable<C, X: Tuple> = RCurry<C, Output: FnOnce<X>>;
 
 /// A trait providing the method for currying from the right.
 /// 
-/// Only types that implement [FnOnce](FnOnce) and can take a rightmost argument of type `C` can be called once curried.
+/// Only types that implement [FnOnce](core::ops::FnOnce) and can take a rightmost argument of type `C` can be called once curried.
 /// 
 /// # Examples
 /// 
