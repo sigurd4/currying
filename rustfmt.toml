@@ -11,3 +11,9 @@ unstable_features = true
 wrap_comments = true
 comment_width = 170
 max_width = 170
+trailing_comma = "Never"
+
+# TO BE DESIRED:
+# - don't add space between '*' and '/' binary operators
+# - Add newline in empty multi-line block
+# - No space in generic const expr block

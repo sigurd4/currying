@@ -30,6 +30,12 @@ jobs:
       with:
         command: "test"
         name: "Run `cargo test`"
+    - uses: "taiki-e/install-action@v2"
+      with:
+        tool: "cargo-hack"
+      name: "Install cargo-hack"
+    - run: "cargo hack test --each-feature --optional-deps --all-targets"
+      name: "Check all features with 'cargo-hack'"
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
       uses: codecov/test-results-action@v1
