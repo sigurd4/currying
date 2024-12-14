@@ -11,10 +11,10 @@
 
 //! A crate for currying functions in rust
 //!
-//! Arguments can be passed one at a time, yielding a new something implementing `FnOnce`
-//! (and possibly `FnMut` and `Fn`) which can be called with one less argument.
+//! Arguments can be passed one at a time, yielding a new something implementing [FnOnce](core::ops::FnOnce)
+//! (and possibly [FnMut](core::ops::FnMut) and [Fn](core::ops::Fn)) which can be called with one less argument.
 //!
-//! It also implements [AsyncFnOnce](AsyncFnOnce), [AsyncFnMut](AsyncFnMut) and [AsyncFn](AsyncFn) if the feature `async` is enabled,
+//! It also implements [AsyncFnOnce](core::ops::AsyncFnOnce), [AsyncFnMut](core::ops::AsyncFnMut) and [AsyncFn](core::ops::AsyncFn) if the feature `async` is enabled,
 //! since this is an experimental feature.
 //!
 //! Curried arguments are then omitted when calling the curried function, as they have already been passed.

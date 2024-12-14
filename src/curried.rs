@@ -7,9 +7,9 @@ use tupleops::{TupleConcatMany, ConcatMany};
 
 /// A struct which represents a curried function.
 /// 
-/// This struct implements [FnOnce](FnOnce), [FnMut](FnMut) and [Fn](Fn) if the curried function also implements these traits.
+/// This struct implements [FnOnce](core::ops::FnOnce), [FnMut](core::ops::FnMut) and [Fn](core::ops::Fn) if the curried function also implements these traits.
 /// 
-/// It also implements [AsyncFnOnce](AsyncFnOnce), [AsyncFnMut](AsyncFnMut) and [AsyncFn](AsyncFn) if the feature `async` is enabled,
+/// It also implements [AsyncFnOnce](core::ops::AsyncFnOnce), [AsyncFnMut](core::ops::AsyncFnMut) and [AsyncFn](core::ops::AsyncFn) if the feature `async` is enabled,
 /// since this is an experimental feature.
 /// 
 /// Curried arguments are then omitted when calling the curried function, as they have already been passed.
