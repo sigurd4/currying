@@ -97,4 +97,4 @@ This is a stable feature, and is enabled by default. You can opt out of it by di
 
 By default, anything can technically be curried. While it would be nice to be able to prevent currying of something that isn't a function, this makes type inferrence much worse.
 
-If you want this a type-constraint so that only function-types can be curried, at the cost of ideal type-inferrance, use the feature flag `pedantic`.
+If you want this a type-constraint so that only function-types can be curried, at the cost of ideal type-inferrence, use the feature flag `pedantic`.
