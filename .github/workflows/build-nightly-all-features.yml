@@ -39,5 +39,5 @@ jobs:
       with:
         tool: "cargo-hack"
       name: "Install cargo-hack"
-    - run: "cargo hack check --each-feature --optional-deps --all-targets"
+    - run: "cargo hack check --each-feature --optional-deps --all-targets ${{ vars.CARGO_HACK_EACH_FEATURE_EXTRA_ARGS }}"
       name: "Check all features with 'cargo-hack'"

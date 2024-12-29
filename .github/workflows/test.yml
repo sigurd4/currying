@@ -34,7 +34,7 @@ jobs:
       with:
         tool: "cargo-hack"
       name: "Install cargo-hack"
-    - run: "cargo hack test --each-feature --optional-deps --all-targets"
+    - run: "cargo hack test --each-feature --optional-deps --all-targets ${{ vars.CARGO_HACK_EACH_FEATURE_EXTRA_ARGS }}"
       name: "Check all features with 'cargo-hack'"
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
