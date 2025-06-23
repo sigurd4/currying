@@ -28,5 +28,5 @@ pedantic = []
 rcurry = []
 
 [dependencies]
-moddef = "0.2.6"
+moddef = "0.3.0"
 tupleops = {version = "0.1.1", features = ["concat"]}
