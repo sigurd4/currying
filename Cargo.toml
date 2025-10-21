@@ -20,13 +20,21 @@ unsafe_code = "forbid"
 maintainence = {status = "as-is"}
 
 [features]
-default = ["rcurry", "const"]
-experimental = ["async", "const"]
-async = []
-const = []
-pedantic = []
+default = ["rcurry", "16"]
 rcurry = []
+8 = ["tupleops/8"]
+16 = ["tupleops/16", "8"]
+32 = ["tupleops/32", "16"]
+64 = ["tupleops/64", "32"]
+96 = ["tupleops/96", "64"]
+128 = ["tupleops/128", "96"]
+160 = ["tupleops/160", "128"]
+192 = ["tupleops/192", "160"]
+224 = ["tupleops/224", "192"]
+256 = ["tupleops/256", "224"]
+dont_hurt_yourself_by_using_all_features = ["tupleops/dont_hurt_yourself_by_using_all_features"]
 
 [dependencies]
-moddef = "0.2.6"
+moddef = "0.3.0"
 tupleops = {version = "0.1.1", features = ["concat"]}
+tupleops-macros = "0.1.0"

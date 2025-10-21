@@ -1,9 +1,8 @@
 use core::marker::Tuple;
 
-#[cfg(feature = "async")]
-use core::ops::{AsyncFn, AsyncFnMut, AsyncFnOnce};
+use crate::concat_args::ConcatArgs;
 
-use tupleops::{TupleConcatMany, ConcatMany};
+use core::ops::{AsyncFn, AsyncFnMut, AsyncFnOnce};
 
 /// A struct which represents a curried function.
 /// 
@@ -77,67 +76,57 @@ impl<C, F> Curried<(), (C,), F>
     }
 }
 
-impl<LX, X, RX, F> /*const*/ FnOnce<X> for Curried<LX, RX, F>
+impl<LX, X, RX, F, U> const FnOnce<X> for Curried<LX, RX, F>
 where
     LX: Tuple,
     X: Tuple,
     RX: Tuple,
-    (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-    ConcatMany<(LX, X, RX)>: Tuple,
-    F: /*~const*/ FnOnce<ConcatMany<(LX, X, RX)>>,
-    //Self: /*~const*/ Destruct
+    (LX, X, RX): ~const ConcatArgs<Type = U>,
+    F: ~const FnOnce<U>
 {
     type Output = F::Output;
 
     extern "rust-call" fn call_once(self, args: X) -> Self::Output
     {
-        //self.func.call_once(private::tuples_concat_const(self.args_left, args, self.args_right))
-        self.func.call_once(tupleops::concat_many((self.args_left, args, self.args_right)))
+        self.func.call_once((self.args_left, args, self.args_right).concat_args())
     }
 }
 
-impl<LX, X, RX, F> /*const*/ FnMut<X> for Curried<LX, RX, F>
+impl<LX, X, RX, F, U> const FnMut<X> for Curried<LX, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
     RX: Tuple + Copy,
-    (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-    ConcatMany<(LX, X, RX)>: Tuple,
-    F: /*~const*/ FnMut<ConcatMany<(LX, X, RX)>>
+    (LX, X, RX): ~const ConcatArgs<Type = U>,
+    F: ~const FnMut<U>
 {
     extern "rust-call" fn call_mut(&mut self, args: X) -> Self::Output
     {
-        //self.func.call_mut(private::tuples_concat_const(self.args_left, args, self.args_right))
-        self.func.call_mut(tupleops::concat_many((self.args_left, args, self.args_right)))
+        self.func.call_mut((self.args_left, args, self.args_right).concat_args())
     }
 }
 
-impl<LX, X, RX, F> /*const*/ Fn<X> for Curried<LX, RX, F>
+impl<LX, X, RX, F, U> const Fn<X> for Curried<LX, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
     RX: Tuple + Copy,
-    (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-    ConcatMany<(LX, X, RX)>: Tuple,
-    F: /*~const*/ Fn<ConcatMany<(LX, X, RX)>>
+    (LX, X, RX): ~const ConcatArgs<Type = U>,
+    F: ~const Fn<U>
 {
     extern "rust-call" fn call(&self, args: X) -> Self::Output
     {
-        //self.func.call(private::tuples_concat_const(self.args_left, args, self.args_right))
-        self.func.call(tupleops::concat_many((self.args_left, args, self.args_right)))
+        self.func.call((self.args_left, args, self.args_right).concat_args())
     }
 }
 
-#[cfg(feature = "async")]
-impl<LX, X, RX, F> /*const*/ AsyncFnOnce<X> for Curried<LX, RX, F>
+impl<LX, X, RX, F, U> AsyncFnOnce<X> for Curried<LX, RX, F>
 where
     LX: Tuple,
     X: Tuple,
     RX: Tuple,
-    (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-    ConcatMany<(LX, X, RX)>: Tuple,
-    F: /*~const*/ AsyncFnOnce<ConcatMany<(LX, X, RX)>>,
-    //Self: /*~const*/ Destruct
+    (LX, X, RX): ConcatArgs<Type = U>,
+    F: AsyncFnOnce<U>
 {
     type Output = F::Output;
 
@@ -145,20 +134,17 @@ where
 
     extern "rust-call" fn async_call_once(self, args: X) -> Self::CallOnceFuture
     {
-        //self.func.async_call_once(private::tuples_concat_const(self.args_left, args, self.args_right))
-        self.func.async_call_once(tupleops::concat_many((self.args_left, args, self.args_right)))
+        self.func.async_call_once((self.args_left, args, self.args_right).concat_args())
     }
 }
 
-#[cfg(feature = "async")]
-impl<LX, X, RX, F> /*const*/ AsyncFnMut<X> for Curried<LX, RX, F>
+impl<LX, X, RX, F, U> AsyncFnMut<X> for Curried<LX, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
     RX: Tuple + Copy,
-    (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-    ConcatMany<(LX, X, RX)>: Tuple,
-    F: /*~const*/ AsyncFnMut<ConcatMany<(LX, X, RX)>>
+    (LX, X, RX): ConcatArgs<Type = U>,
+    F: AsyncFnMut<U>
 {
     type CallRefFuture<'a> = F::CallRefFuture<'a>
     where
@@ -166,56 +152,20 @@ where
 
     extern "rust-call" fn async_call_mut(&mut self, args: X) -> Self::CallRefFuture<'_>
     {
-        //self.func.async_call_mut(private::tuples_concat_const(self.args_left, args, self.args_right))
-        self.func.async_call_mut(tupleops::concat_many((self.args_left, args, self.args_right)))
+        self.func.async_call_mut((self.args_left, args, self.args_right).concat_args())
     }
 }
 
-#[cfg(feature = "async")]
-impl<LX, X, RX, F> /*const*/ AsyncFn<X> for Curried<LX, RX, F>
+impl<LX, X, RX, F, U> AsyncFn<X> for Curried<LX, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
     RX: Tuple + Copy,
-    (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-    ConcatMany<(LX, X, RX)>: Tuple,
-    F: /*~const*/ AsyncFn<ConcatMany<(LX, X, RX)>>
+    (LX, X, RX): ConcatArgs<Type = U>,
+    F: AsyncFn<U>
 {
     extern "rust-call" fn async_call(&self, args: X) -> Self::CallRefFuture<'_>
     {
-        //self.func.async_call(private::tuples_concat_const(self.args_left, args, self.args_right))
-        self.func.async_call(tupleops::concat_many((self.args_left, args, self.args_right)))
+        self.func.async_call((self.args_left, args, self.args_right).concat_args())
     }
 }
-
-/*mod private
-{
-    use core::{marker::Tuple, mem::ManuallyDrop};
-
-    use tupleops::{TupleConcatMany, ConcatMany};
-
-    union TupleConcatManyTransmutation<Tpls>
-    where
-        Tpls: TupleConcatMany<Tpls>
-    {
-        tuples: ManuallyDrop<Tpls>,
-        concat: ManuallyDrop<ConcatMany<Tpls>>
-    }
-
-    #[deprecated]
-    pub const fn tuples_concat_const<LX, X, RX>(left: LX, mid: X, right: RX) -> ConcatMany<(LX, X, RX)>
-    where
-        LX: Tuple,
-        X: Tuple,
-        RX: Tuple,
-        (LX, X, RX): TupleConcatMany<(LX, X, RX)>,
-        ConcatMany<(LX, X, RX)>: Tuple
-    {
-        unsafe {
-            ManuallyDrop::into_inner(TupleConcatManyTransmutation
-            {
-                tuples: ManuallyDrop::new((left, mid, right))
-            }.concat)
-        }
-    }
-}*/

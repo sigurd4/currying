@@ -4,10 +4,10 @@
 #![feature(fn_traits)]
 #![feature(trait_alias)]
 #![feature(const_trait_impl)]
-//#![cfg_attr(feature = "const", feature(const_trait_impl))]
-//#![cfg_attr(feature = "const", feature(const_destruct))]
-#![cfg_attr(feature = "async", feature(async_closure))]
-#![cfg_attr(feature = "async", feature(async_fn_traits))]
+#![feature(const_destruct)]
+#![feature(const_precise_live_drops)]
+#![feature(async_fn_traits)]
+#![feature(specialization)]
 
 //! A crate for currying functions in rust
 //!
@@ -43,8 +43,7 @@
 //! Currying also works at compile-time.
 //!
 //! ```rust
-//! #![feature(const_trait_impl)]
-//!
+//! # #![feature(const_trait_impl)]
 //! use currying::*;
 //!
 //! const fn f(x: u8, y: u8, z: u8) -> u8 {
@@ -55,29 +54,29 @@
 //! const Y: u8 = 2;
 //! const Z: u8 = 3;
 //!
-//! type FType = fn(u8, u8, u8) -> u8;
-//! type FXType = Curried<(u8,), (), &'static FType>;
-//! type FXZType = Curried<(), (u8,), &'static FXType>;
-//! type FXYZType = Curried<(u8,), (), &'static FXZType>;
+//! const {
+//!     let fx = f.curry(X);
 //!
-//! const F: FType = f;
-//! const FX: FXType = F.curry(X);
-//! const FXZ: FXZType = FX.rcurry(Z);
-//! const FXYZ: FXYZType = FXZ.curry(Y);
+//!     assert!(fx(Y, Z) == f(X, Y, Z));
 //!
-//! assert_eq!(FX(Y, Z), f(X, Y, Z));
-//! assert_eq!(FXZ(Y), f(X, Y, Z));
-//! assert_eq!(FXYZ(), f(X, Y, Z));
+//!     let fxz = fx.rcurry(Z);
+//!
+//!     assert!(fxz(Y) == f(X, Y, Z));
+//!
+//!     let fxyz = fxz.curry(Y);
+//!
+//!     assert!(fxyz() == f(X, Y, Z));
+//! }
 //! ```
 moddef::moddef!(
     flat(pub) mod {
         curried,
         curry,
-        rcurry for cfg(feature = "rcurry")
+        rcurry for cfg(feature = "rcurry"),
+        concat_args
     }
 );
 
-#[cfg(not(feature = "pedantic"))]
 #[cfg(test)]
 mod test
 {
@@ -141,7 +140,6 @@ mod test
         assert_eq!(i, i0 + n)
     }
 
-    #[cfg(feature = "const")]
     #[cfg(feature = "rcurry")]
     #[test]
     fn test_const()
@@ -157,76 +155,18 @@ mod test
         const Y: u8 = 2;
         const Z: u8 = 3;
 
-        type FType = fn(u8, u8, u8) -> u8;
-        type FXType = Curried<(u8,), (), &'static FType>;
-        type FXZType = Curried<(), (u8,), &'static FXType>;
-        type FXYZType = Curried<(u8,), (), &'static FXZType>;
+        const {
+            let fx = f.curry(X);
 
-        const F: FType = f;
-        const FX: FXType = F.curry(X);
-        const FXZ: FXZType = FX.rcurry(Z);
-        const FXYZ: FXYZType = FXZ.curry(Y);
+            assert!(fx(Y, Z) == f(X, Y, Z));
 
-        assert_eq!(FX(Y, Z), f(X, Y, Z));
-        assert_eq!(FXZ(Y), f(X, Y, Z));
-        assert_eq!(FXYZ(), f(X, Y, Z));
-    }
-}
+            let fxz = fx.rcurry(Z);
 
-#[cfg(feature = "pedantic")]
-#[cfg(test)]
-mod test
-{
-    #[cfg(feature = "rcurry")]
-    #[test]
-    fn test()
-    {
-        use crate::*;
+            assert!(fxz(Y) == f(X, Y, Z));
 
-        let f = |x, y, z| x + y + z;
-        let (x, y, z) = (1, 2, 3);
+            let fxyz = fxz.curry(Y);
 
-        let fx = f.curry::<(i32, i32)>(x);
-
-        assert_eq!(fx(y, z), f(x, y, z));
-
-        let fxz = fx.rcurry::<(i32,)>(z);
-
-        assert_eq!(fxz(y), f(x, y, z));
-
-        let fxyz = fxz.curry::<()>(y);
-
-        assert_eq!(fxyz(), f(x, y, z));
-    }
-
-    #[cfg(feature = "const")]
-    #[cfg(feature = "rcurry")]
-    #[test]
-    fn test_const()
-    {
-        use crate::*;
-
-        const fn f(x: u8, y: u8, z: u8) -> u8
-        {
-            x + y + z
+            assert!(fxyz() == f(X, Y, Z));
         }
-
-        const X: u8 = 1;
-        const Y: u8 = 2;
-        const Z: u8 = 3;
-
-        type FType = fn(u8, u8, u8) -> u8;
-        type FXType = Curried<(u8,), (), &'static FType>;
-        type FXZType = Curried<(), (u8,), &'static FXType>;
-        type FXYZType = Curried<(u8,), (), &'static FXZType>;
-
-        const F: FType = f;
-        const FX: FXType = F.curry::<(u8, u8)>(X);
-        const FXZ: FXZType = FX.rcurry::<(u8,)>(Z);
-        const FXYZ: FXYZType = FXZ.curry::<()>(Y);
-
-        assert_eq!(FX(Y, Z), f(X, Y, Z));
-        assert_eq!(FXZ(Y), f(X, Y, Z));
-        assert_eq!(FXYZ(), f(X, Y, Z));
     }
 }

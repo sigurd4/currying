@@ -56,84 +56,26 @@ pub trait Curriable<C, X: Tuple> = Curry<C, Output: FnOnce<X>>;
 /// 
 /// assert_eq!(fxyz(), f(x, y, z));
 /// ```
-#[cfg_attr(feature = "const", const_trait)]
-pub trait Curry<C>: Sized
+pub const trait Curry<C>: Sized
 {
     type Output;
 
-    #[cfg(not(feature = "pedantic"))]
     fn curry_once(self, arg: C) -> Self::Output;
-    #[cfg(not(feature = "pedantic"))]
     fn curry_mut(&mut self, arg: C) -> <&mut Self as Curry<C>>::Output
     {
         self.curry_once(arg)
     }
-    #[cfg(not(feature = "pedantic"))]
     fn curry(&self, arg: C) -> <&Self as Curry<C>>::Output
     {
         self.curry_once(arg)
     }
-
-    #[cfg(feature = "pedantic")]
-    fn curry_once<X>(self, arg: C) -> Self::Output
-    where
-        X: Tuple,
-        Self::Output: FnOnce<X>;
-    #[cfg(feature = "pedantic")]
-    fn curry_mut<'a, X>(&'a mut self, arg: C) -> <&'a mut Self as Curry<C>>::Output
-    where
-        X: Tuple,
-        <&'a mut Self as Curry<C>>::Output: FnOnce<X>
-    {
-        self.curry_once(arg)
-    }
-    #[cfg(feature = "pedantic")]
-    fn curry<'a, X>(&'a self, arg: C) -> <&'a Self as Curry<C>>::Output
-    where
-        X: Tuple,
-        <&'a Self as Curry<C>>::Output: FnOnce<X>
-    {
-        self.curry_once(arg)
-    }
 }
 
-#[cfg(feature = "const")]
 impl<C, F> const Curry<C> for F
 {
     type Output = Curried<(C,), (), F>;
 
-    #[cfg(not(feature = "pedantic"))]
     fn curry_once(self, arg: C) -> Self::Output
-    {
-        Curried::curry(self, arg)
-    }
-
-    #[cfg(feature = "pedantic")]
-    fn curry_once<X>(self, arg: C) -> Self::Output
-    where
-        X: Tuple,
-        Self::Output: FnOnce<X>
-    {
-        Curried::curry(self, arg)
-    }
-}
-
-#[cfg(not(feature = "const"))]
-impl<C, F> Curry<C> for F
-{
-    type Output = Curried<(C,), (), F>;
-
-    #[cfg(not(feature = "pedantic"))]
-    fn curry_once(self, arg: C) -> Self::Output
-    {
-        Curried::curry(self, arg)
-    }
-
-    #[cfg(feature = "pedantic")]
-    fn curry_once<X>(self, arg: C) -> Self::Output
-    where
-        X: Tuple,
-        Self::Output: FnOnce<X>
     {
         Curried::curry(self, arg)
     }

@@ -56,84 +56,26 @@ pub trait RCurriable<C, X: Tuple> = RCurry<C, Output: FnOnce<X>>;
 /// 
 /// assert_eq!(fxyz(), f(x, y, z));
 /// ```
-#[cfg_attr(feature = "const", const_trait)]
-pub trait RCurry<C>: Sized
+pub const trait RCurry<C>: Sized
 {
     type Output;
 
-    #[cfg(not(feature = "pedantic"))]
     fn rcurry_once(self, arg: C) -> Self::Output;
-    #[cfg(not(feature = "pedantic"))]
     fn rcurry_mut(&mut self, arg: C) -> <&mut Self as RCurry<C>>::Output
     {
         self.rcurry_once(arg)
     }
-    #[cfg(not(feature = "pedantic"))]
     fn rcurry(&self, arg: C) -> <&Self as RCurry<C>>::Output
     {
         self.rcurry_once(arg)
     }
-
-    #[cfg(feature = "pedantic")]
-    fn rcurry_once<X>(self, arg: C) -> Self::Output
-    where
-        X: Tuple,
-        Self::Output: FnOnce<X>;
-    #[cfg(feature = "pedantic")]
-    fn rcurry_mut<'a, X>(&'a mut self, arg: C) -> <&'a mut Self as RCurry<C>>::Output
-    where
-        X: Tuple,
-        <&'a mut Self as RCurry<C>>::Output: FnOnce<X>
-    {
-        self.rcurry_once(arg)
-    }
-    #[cfg(feature = "pedantic")]
-    fn rcurry<'a, X>(&'a self, arg: C) -> <&'a Self as RCurry<C>>::Output
-    where
-        X: Tuple,
-        <&'a Self as RCurry<C>>::Output: FnOnce<X>
-    {
-        self.rcurry_once(arg)
-    }
 }
 
-#[cfg(feature = "const")]
 impl<C, F> const RCurry<C> for F
 {
     type Output = Curried<(), (C,), F>;
 
-    #[cfg(not(feature = "pedantic"))]
     fn rcurry_once(self, arg: C) -> Self::Output
-    {
-        Curried::rcurry(self, arg)
-    }
-
-    #[cfg(feature = "pedantic")]
-    fn rcurry_once<X>(self, arg: C) -> Self::Output
-    where
-        X: Tuple,
-        Self::Output: FnOnce<X>
-    {
-        Curried::rcurry(self, arg)
-    }
-}
-
-#[cfg(not(feature = "const"))]
-impl<C, F> RCurry<C> for F
-{
-    type Output = Curried<(), (C,), F>;
-
-    #[cfg(not(feature = "pedantic"))]
-    fn rcurry_once(self, arg: C) -> Self::Output
-    {
-        Curried::rcurry(self, arg)
-    }
-
-    #[cfg(feature = "pedantic")]
-    fn rcurry_once<X>(self, arg: C) -> Self::Output
-    where
-        X: Tuple,
-        Self::Output: FnOnce<X>
     {
         Curried::rcurry(self, arg)
     }
