@@ -19,7 +19,7 @@ where
 
 macro_rules! impl_concat_args {
     ($($t0:ident $($t:ident)*)?) => {
-        impl<L, $($t0, $($t,)*)? R> const ConcatArgs for ((L,), ($($t0, $($t,)*)?), (R,))
+        const impl<L, $($t0, $($t,)*)? R> ConcatArgs for ((L,), ($($t0, $($t,)*)?), (R,))
         {
             fn concat_args(self) -> Self::Type
             {
@@ -27,7 +27,7 @@ macro_rules! impl_concat_args {
                 (l, $($t0, $($t,)*)? r,)
             }
         }
-        impl<L, $($t0, $($t,)*)?> const ConcatArgs for ((L,), ($($t0, $($t,)*)?), ())
+        const impl<L, $($t0, $($t,)*)?> ConcatArgs for ((L,), ($($t0, $($t,)*)?), ())
         {
             fn concat_args(self) -> Self::Type
             {
@@ -35,7 +35,7 @@ macro_rules! impl_concat_args {
                 (l, $($t0, $($t,)*)?)
             }
         }
-        impl<$($t0, $($t,)*)? R> const ConcatArgs for ((), ($($t0, $($t,)*)?), (R,))
+        const impl<$($t0, $($t,)*)? R> ConcatArgs for ((), ($($t0, $($t,)*)?), (R,))
         {
             fn concat_args(self) -> Self::Type
             {
@@ -47,10 +47,10 @@ macro_rules! impl_concat_args {
     };
 }
 
-#[cfg(any(not(feature = "8"), feature = "dont_hurt_yourself_by_using_all_features"))]
-impl_concat_args!();
+#[cfg(not(feature = "8"))]
 #[cfg(not(feature = "dont_hurt_yourself_by_using_all_features"))]
-#[cfg(all(feature = "8", not(feature = "16")))]
+impl_concat_args!();
+#[cfg(any(all(feature = "8", not(feature = "16")), feature = "dont_hurt_yourself_by_using_all_features"))]
 impl_concat_args!(
     _3 _4 _5 _6 _7 _8
 );

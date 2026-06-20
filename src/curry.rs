@@ -71,7 +71,7 @@ pub const trait Curry<C>: Sized
     }
 }
 
-impl<C, F> const Curry<C> for F
+const impl<C, F> Curry<C> for F
 {
     type Output = Curried<(C,), (), F>;
 

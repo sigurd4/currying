@@ -4,35 +4,64 @@ use crate::concat_args::ConcatArgs;
 
 use core::ops::{AsyncFn, AsyncFnMut, AsyncFnOnce};
 
-/// A struct which represents a curried function.
-/// 
-/// This struct implements [FnOnce](core::ops::FnOnce), [FnMut](core::ops::FnMut) and [Fn](core::ops::Fn) if the curried function also implements these traits.
-/// 
-/// It also implements [AsyncFnOnce](core::ops::AsyncFnOnce), [AsyncFnMut](core::ops::AsyncFnMut) and [AsyncFn](core::ops::AsyncFn) if the feature `async` is enabled,
-/// since this is an experimental feature.
-/// 
-/// Curried arguments are then omitted when calling the curried function, as they have already been passed.
-/// 
-/// # Examples
-/// 
-/// ```rust
-/// use currying::*;
-/// 
-/// let f = |x, y, z| x + y + z;
-/// let (x, y, z) = (1, 2, 3);
-/// 
-/// let fx = f.curry(x);
-/// 
-/// assert_eq!(fx(y, z), f(x, y, z));
-/// 
-/// let fxz = fx.rcurry(z);
-/// 
-/// assert_eq!(fxz(y), f(x, y, z));
-/// 
-/// let fxyz = fxz.curry(y);
-/// 
-/// assert_eq!(fxyz(), f(x, y, z));
-/// ```
+#[cfg_attr(feature = "rcurry", doc = r#"A struct which represents a curried function.
+
+This struct implements [FnOnce](core::ops::FnOnce), [FnMut](core::ops::FnMut) and [Fn](core::ops::Fn) if the curried function also implements these traits.
+
+It also implements [AsyncFnOnce](core::ops::AsyncFnOnce), [AsyncFnMut](core::ops::AsyncFnMut) and [AsyncFn](core::ops::AsyncFn) if the feature `async` is enabled,
+since this is an experimental feature.
+
+Curried arguments are then omitted when calling the curried function, as they have already been passed.
+
+# Examples
+
+```rust
+use currying::*;
+
+let f = |x, y, z| x + y + z;
+let (x, y, z) = (1, 2, 3);
+
+let fx = f.curry(x);
+
+assert_eq!(fx(y, z), f(x, y, z));
+
+let fxz = fx.rcurry(z);
+
+assert_eq!(fxz(y), f(x, y, z));
+
+let fxyz = fxz.curry(y);
+
+assert_eq!(fxyz(), f(x, y, z));
+```"#)]
+#[cfg_attr(not(feature = "rcurry"), doc = r#"A struct which represents a curried function.
+
+This struct implements [FnOnce](core::ops::FnOnce), [FnMut](core::ops::FnMut) and [Fn](core::ops::Fn) if the curried function also implements these traits.
+
+It also implements [AsyncFnOnce](core::ops::AsyncFnOnce), [AsyncFnMut](core::ops::AsyncFnMut) and [AsyncFn](core::ops::AsyncFn) if the feature `async` is enabled,
+since this is an experimental feature.
+
+Curried arguments are then omitted when calling the curried function, as they have already been passed.
+
+# Examples
+
+```rust
+use currying::*;
+
+let f = |x, y, z| x + y + z;
+let (x, y, z) = (1, 2, 3);
+
+let fx = f.curry(x);
+
+assert_eq!(fx(y, z), f(x, y, z));
+
+let fxy = fx.curry(y);
+
+assert_eq!(fxy(z), f(x, y, z));
+
+let fxyz = fxy.curry(z);
+
+assert_eq!(fxyz(), f(x, y, z));
+```"#)]
 #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq)]
 pub struct Curried<LX, RX, F>
 where
@@ -76,7 +105,7 @@ impl<C, F> Curried<(), (C,), F>
     }
 }
 
-impl<LX, X, RX, F, U> const FnOnce<X> for Curried<LX, RX, F>
+const impl<LX, X, RX, F, U> FnOnce<X> for Curried<LX, RX, F>
 where
     LX: Tuple,
     X: Tuple,
@@ -92,7 +121,7 @@ where
     }
 }
 
-impl<LX, X, RX, F, U> const FnMut<X> for Curried<LX, RX, F>
+const impl<LX, X, RX, F, U> FnMut<X> for Curried<LX, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
@@ -106,7 +135,7 @@ where
     }
 }
 
-impl<LX, X, RX, F, U> const Fn<X> for Curried<LX, RX, F>
+const impl<LX, X, RX, F, U> Fn<X> for Curried<LX, RX, F>
 where
     LX: Tuple + Copy,
     X: Tuple,
